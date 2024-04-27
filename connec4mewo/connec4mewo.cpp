@@ -11,17 +11,27 @@ public:
 	int xsize;
 	int ysize;
 	vector<vector<int>> board;
-	Boardstate(const int x,const int y) {
-		vector<vector<int>> board(x,vector<int>(y));
+	Boardstate(const int x,const int y) { //initialises the board with only zeroes in desired sizes
+		vector<vector<int>> board_temp(x);
 		xsize = x;
 		ysize = y;
 		for (int i = 0; i < x; i++) {
-			for (int j = 0; j < y; j++) {
-				board[i][j] = 0;
+			board_temp[i]=vector<int>(y);
+			for (int j = 0; j < y; j++) { 
+				board_temp[i][j] = 0;
+			}
+
+		}
+		board = board_temp;
+	}
+	void visualise() { // prints the board to console
+		for (int j = 0; j < ysize; j++) {
+			cout << endl;
+			for (int i = 0; i < xsize; i++) {
+				cout << board[i][j];
 			}
 		}
 	}
-	void 
 
 
 };
@@ -30,6 +40,7 @@ int main()
 {
 	Boardstate b(5, 5);
 	cout << "Hello CMake." << endl;
+	b.visualise();
 	
 	return 0;
 }
