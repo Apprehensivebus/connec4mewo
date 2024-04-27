@@ -22,13 +22,36 @@ public:
 			}
 
 		}
-		board = board_temp;
+		board = board_temp; // could not get it to work without the whole board temp thing
 	}
 	void visualise() { // prints the board to console
 		for (int j = 0; j < ysize; j++) {
 			cout << endl;
 			for (int i = 0; i < xsize; i++) {
 				cout << board[i][j];
+			}
+		}
+		cout << endl;
+	}
+
+	bool isFull(int col) { //does not check for out of bounds etc, only for use after checking
+		return board[col][0] != 0;
+	}
+
+	bool put(int col, int side) {
+		if (col < 0 || col >= xsize) {
+			return false;
+		}
+		else if (isFull(col)) {
+			return false;
+		}
+		else {
+			for (int i = ysize - 1; i >= 0; i--) {
+				if (board[col][i] == 0) {
+					board[col][i] = side;
+					break;
+					return true;
+				}
 			}
 		}
 	}
@@ -38,9 +61,14 @@ public:
 
 int main()
 {
-	Boardstate b(5, 5);
+	cout << boolalpha;
+	Boardstate b(4, 3);
 	cout << "Hello CMake." << endl;
 	b.visualise();
+	b.put(2, 1); 
+
+	b.visualise();
+	
 	
 	return 0;
 }
