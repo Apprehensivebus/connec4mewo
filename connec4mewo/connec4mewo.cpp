@@ -150,6 +150,29 @@ public:
 		return checkVertical(side) || checkHorizontal(side) || checkRising(side) || checkFalling(side);
 	}
 
+	int gradeMove(int col, vector<vector<int>> board_t, int side, int depth) { //This is a recursive function that when given the initial move will check all possible consequent moves until a certain depth and grade them
+		//if recursion number is 0:
+			//check for victory and give score
+		//if recursion number is not 0:
+			//check all legal moves
+			// for all legal modes
+				//check each for victory
+					//give those with victory score based on remaining depth
+				// for all those without victory
+					//run grademove with recursion number -1 and side
+			//sum scores of each run
+		//return score
+			
+	}
+
+	int selectMove(vector<vector<int>> board_t, int side, int depth) { //this will find all legal moves then start a recursive gradeMove for each
+		// check all legal moves
+		//for all legal moves
+			//run grademove with desired recursion number and side
+	}
+
+
+	
 
 };
 
@@ -159,19 +182,7 @@ int main()
 	Boardstate b(7, 6, 4);
 	cout << "mewo" << endl;
 	b.visualise();
-	b.put(5, 1);
-	b.put(4, 2);
-	b.put(4, 1);
-	b.put(3, 2);
-	b.put(3, 2);
-	b.put(3, 1);
-	b.checkWin(1);
-	b.put(2, 2);
-	b.put(2, 2);
-	b.put(2, 2);
-	b.put(2, 1);
-	b.checkWin(1);
-	b.visualise();
+	
 	
 	
 	return 0;
