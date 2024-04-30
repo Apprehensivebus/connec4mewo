@@ -30,7 +30,18 @@ public:
 		for (int j = 0; j < ysize; j++) {
 			cout << endl;
 			for (int i = 0; i < xsize; i++) {
-				cout << board[i][j];
+				switch (board[i][j]) {
+					case 0:
+						cout << "_";
+						break;
+					case 1:
+						cout << "x";
+						break;
+					case -1:
+						cout << "o";
+						break;
+				}
+
 			}
 		}
 		cout << endl;
@@ -67,7 +78,7 @@ public:
 					if (board[i - k][j - k] == side) {
 						chainlength++;
 						if (chainlength == winlength) {
-							cout << "win detected falling diagonal" << endl;
+							//cout << "win detected falling diagonal" << endl;
 							return true;
 						}
 					}
@@ -89,7 +100,7 @@ public:
 					if (board[i + k][j-k] == side) {
 						chainlength++;
 						if (chainlength == winlength) {
-							cout << "win detected rising diagonal" << endl;
+							//cout << "win detected rising diagonal" << endl;
 							return true;
 						}
 					}
@@ -111,7 +122,7 @@ public:
 					if (board[i-k][j] == side) {
 						chainlength++;
 						if (chainlength == winlength) {
-							cout << "win detected horizontal" << endl;
+							//cout << "win detected horizontal" << endl;
 							return true;
 						}
 					}
@@ -133,7 +144,7 @@ public:
 					if (board[j][i-k]==side) {
 						chainlength++;
 						if (chainlength == winlength) {
-							cout << "win detected vertical" << endl;
+							//cout << "win detected vertical" << endl;
 							return true;
 						}
 					}
@@ -150,30 +161,47 @@ public:
 		return checkVertical(side) || checkHorizontal(side) || checkRising(side) || checkFalling(side);
 	}
 
-	int gradeMove(int col, vector<vector<int>> board_t, int side, int depth) { //This is a recursive function that when given the initial move will check all possible consequent moves until a certain depth and grade them
-		//if recursion number is 0:
-			//check for victory and give score
-		//if recursion number is not 0:
-			//check all legal moves
-			// for all legal modes
-				//check each for victory
-					//give those with victory score based on remaining depth
-				// for all those without victory
-					//run grademove with recursion number -1 and side
-			//sum scores of each run
-		//return score
-			
+	
+};
+
+class Game {
+public:
+	static long long int gradeMove(int col, Boardstate b, int side, int depth) { //This is a recursive function that when given the initial move will check all possible consequent moves until a certain depth and grade them
+		b.put(col, side);
+
+		if (b.checkWin(side)) {
+			return 1 * side * pow(b.xsize,depth);
+		} else if (depth == 0) { //if recursion number is 0:
+			return 0;
+		} else { //if recursion number is not 0:
+			long long int score = 0;
+			for (int i = 0; i < b.xsize; i++) { //check all legal moves
+				if (!b.isFull(i)) { // for all legal modes
+					score = score + gradeMove(i, b, side*-1, depth - 1);
+				}
+			}
+			return score;
+		}
+
+
 	}
 
-	int selectMove(vector<vector<int>> board_t, int side, int depth) { //this will find all legal moves then start a recursive gradeMove for each
+	static int selectMove(Boardstate b, int side, int depth) { //this will find all legal moves then start a recursive gradeMove for each
 		// check all legal moves
 		//for all legal moves
 			//run grademove with desired recursion number and side
+		long long int score[7];
+		for (int i = 0; i < b.xsize; i++) { //check all legal moves
+			if (!b.isFull(i)) { // for all legal modes
+				score[i] = gradeMove(i, b, side, depth);
+			}
+		}
+		int n = sizeof(score) / sizeof(score[0]);
+		auto max_it = max_element(score, score + n);
+		int max_index = distance(score, max_it);
+		//cout << score[max_index] <<endl;
+		return max_index;
 	}
-
-
-	
-
 };
 
 int main()
@@ -182,7 +210,28 @@ int main()
 	Boardstate b(7, 6, 4);
 	cout << "mewo" << endl;
 	b.visualise();
-	
+
+	int move;
+	while (true) {
+		cout << "choose your move: "<< endl;
+		cin >> move;
+		b.put(move, -1);
+		if (b.checkWin(-1)) {
+			b.visualise();
+			cout << "You won!" << endl;
+			break;
+		}
+		move = Game::selectMove(b, 1, 6);
+		cout << "Computer player has chosen: " << move << endl;
+		b.put(move, 1);
+		if (b.checkWin(1)) {
+			b.visualise();
+			cout << "You lost :c" << endl;
+			break;
+		}
+		b.visualise();
+		
+	}
 	
 	
 	return 0;
