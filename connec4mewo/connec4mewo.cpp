@@ -3,6 +3,8 @@
 
 #include "connec4mewo.h"
 #include <vector>
+#include <thread>
+#include <future>
 
 
 using namespace std;
@@ -193,10 +195,19 @@ public:
 		// check all legal moves
 		//for all legal moves
 			//run grademove with desired recursion number and side
-		long long int score[7];
+		future<long long> res[7];
+		long long score[7];
 		for (int i = 0; i < b.xsize; i++) { //check all legal moves
 			if (!b.isFull(i)) { // for all legal modes
-				score[i] = gradeMove(i, b, side, depth);
+				res[i] = async(&gradeMove,i, b, side, depth);
+				cout << "started thread " << i;
+			}
+		}
+
+		for (int i = 0; i < b.xsize; i++) { //check all legal moves
+			if (!b.isFull(i)) { // for all legal modes
+				score[i] = res[i].get();
+				cout << "finished thread " << i;
 			}
 		}
 		int n = sizeof(score) / sizeof(score[0]);
@@ -231,7 +242,7 @@ int main()
 			cout << "You won!" << endl;
 			break;
 		}
-		move = Game::selectMove(b, 1, 6);
+		move = Game::selectMove(b, 1, 7);
 		cout << "Computer player has chosen: " << move << endl;
 		b.put(move, 1);
 		if (b.checkWin(1)) {
