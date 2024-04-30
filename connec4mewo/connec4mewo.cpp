@@ -65,7 +65,6 @@ public:
 			for (int i = ysize - 1; i >= 0; i--) {
 				if (board[col][i] == 0) {
 					board[col][i] = side;
-					break;
 					return true;
 				}
 			}
@@ -200,14 +199,12 @@ public:
 		for (int i = 0; i < b.xsize; i++) { //check all legal moves
 			if (!b.isFull(i)) { // for all legal modes
 				res[i] = async(&gradeMove,i, b, side, depth);
-				cout << "started thread " << i;
 			}
 		}
 
 		for (int i = 0; i < b.xsize; i++) { //check all legal moves
 			if (!b.isFull(i)) { // for all legal modes
 				score[i] = res[i].get();
-				cout << "finished thread " << i;
 			}
 		}
 		int n = sizeof(score) / sizeof(score[0]);
@@ -242,7 +239,7 @@ int main()
 			cout << "You won!" << endl;
 			break;
 		}
-		move = Game::selectMove(b, 1, 7);
+		move = Game::selectMove(b, 1, 8);
 		cout << "Computer player has chosen: " << move << endl;
 		b.put(move, 1);
 		if (b.checkWin(1)) {
