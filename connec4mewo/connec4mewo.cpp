@@ -3,7 +3,11 @@
 
 #include "connec4mewo.h"
 #include <vector>
+#include <windows.h>
+#include <ppl.h>
+#include <chrono>
 
+using namespace concurrency;
 using namespace std;
 
 class Boardstate {
@@ -186,12 +190,29 @@ public:
 
 	}
 
+	static int selectMovePar(Boardstate b, int side, int depth) { //this will find all legal moves then start a recursive gradeMove for each
+		// check all legal moves
+		//for all legal moves
+			//run grademove with desired recursion number and side
+		long long int score[7];
+		parallel_for(0, b.xsize - 1, [&](int i) { //check all legal moves
+			if (!b.isFull(i)) { // for all legal modes
+				score[i] = gradeMove(i, b, side, depth);
+			}
+			});
+		int n = sizeof(score) / sizeof(score[0]);
+		auto max_it = max_element(score, score + n);
+		int max_index = distance(score, max_it);
+		//cout << score[max_index] <<endl;
+		return max_index;
+	}
+
 	static int selectMove(Boardstate b, int side, int depth) { //this will find all legal moves then start a recursive gradeMove for each
 		// check all legal moves
 		//for all legal moves
 			//run grademove with desired recursion number and side
 		long long int score[7];
-		for (int i = 0; i < b.xsize; i++) { //check all legal moves
+		for(int i = 0; i < b.xsize; i++) { //check all legal moves
 			if (!b.isFull(i)) { // for all legal modes
 				score[i] = gradeMove(i, b, side, depth);
 			}
@@ -213,15 +234,22 @@ int main()
 
 	int move;
 	while (true) {
-		cout << "choose your move: "<< endl;
-		cin >> move;
-		b.put(move, -1);
+		while (true) {
+			cout << "choose your move: " << endl;
+			cin >> move;
+			if (b.put(move,-1)) {
+				break;
+			}
+			else {
+
+			}
+		}
 		if (b.checkWin(-1)) {
 			b.visualise();
 			cout << "You won!" << endl;
 			break;
 		}
-		move = Game::selectMove(b, 1, 6);
+		move = Game::selectMovePar(b, 1, 6);
 		cout << "Computer player has chosen: " << move << endl;
 		b.put(move, 1);
 		if (b.checkWin(1)) {
