@@ -4,6 +4,7 @@
 #include "connec4mewo.h"
 #include <vector>
 
+
 using namespace std;
 
 class Boardstate {
@@ -12,14 +13,14 @@ public:
 	int ysize;
 	int winlength;
 	vector<vector<int>> board;
-	Boardstate(const int x,const int y, int wl) { //initialises the board with only zeroes in desired sizes
+	Boardstate(const int x, const int y, int wl) { //initialises the board with only zeroes in desired sizes
 		vector<vector<int>> board_temp(x);
 		xsize = x;
 		ysize = y;
 		winlength = wl;
 		for (int i = 0; i < x; i++) {
-			board_temp[i]=vector<int>(y);
-			for (int j = 0; j < y; j++) { 
+			board_temp[i] = vector<int>(y);
+			for (int j = 0; j < y; j++) {
 				board_temp[i][j] = 0;
 			}
 
@@ -31,15 +32,15 @@ public:
 			cout << endl;
 			for (int i = 0; i < xsize; i++) {
 				switch (board[i][j]) {
-					case 0:
-						cout << "_";
-						break;
-					case 1:
-						cout << "x";
-						break;
-					case -1:
-						cout << "o";
-						break;
+				case 0:
+					cout << "_";
+					break;
+				case 1:
+					cout << "x";
+					break;
+				case -1:
+					cout << "o";
+					break;
 				}
 
 			}
@@ -71,7 +72,7 @@ public:
 
 	bool checkFalling(int side) { //Check falling diagonal win
 		int chainlength;
-		for (int i = xsize - 1; i > winlength-1; i--) {
+		for (int i = xsize - 1; i > winlength - 1; i--) {
 			for (int j = ysize - 1; j > winlength - 1; j--) {
 				chainlength = 0;
 				for (int k = 0; k < winlength; k++) {
@@ -93,11 +94,11 @@ public:
 
 	bool checkRising(int side) { //Check rising diagonal win
 		int chainlength;
-		for (int i = 0; i < xsize-winlength; i++) {
+		for (int i = 0; i < xsize - winlength; i++) {
 			for (int j = ysize - 1; j > winlength - 1; j--) {
 				chainlength = 0;
 				for (int k = 0; k < winlength; k++) {
-					if (board[i + k][j-k] == side) {
+					if (board[i + k][j - k] == side) {
 						chainlength++;
 						if (chainlength == winlength) {
 							//cout << "win detected rising diagonal" << endl;
@@ -119,7 +120,7 @@ public:
 			for (int j = 0; j < ysize; j++) {
 				chainlength = 0;
 				for (int k = 0; k < winlength; k++) {
-					if (board[i-k][j] == side) {
+					if (board[i - k][j] == side) {
 						chainlength++;
 						if (chainlength == winlength) {
 							//cout << "win detected horizontal" << endl;
@@ -141,7 +142,7 @@ public:
 			for (int j = 0; j < xsize; j++) {
 				chainlength = 0;
 				for (int k = 0; k < winlength; k++) {
-					if (board[j][i-k]==side) {
+					if (board[j][i - k] == side) {
 						chainlength++;
 						if (chainlength == winlength) {
 							//cout << "win detected vertical" << endl;
@@ -161,7 +162,7 @@ public:
 		return checkVertical(side) || checkHorizontal(side) || checkRising(side) || checkFalling(side);
 	}
 
-	
+
 };
 
 class Game {
@@ -170,14 +171,16 @@ public:
 		b.put(col, side);
 
 		if (b.checkWin(side)) {
-			return 1 * side * pow(b.xsize,depth);
-		} else if (depth == 0) { //if recursion number is 0:
+			return 1 * side * pow(b.xsize, depth);
+		}
+		else if (depth == 0) { //if recursion number is 0:
 			return 0;
-		} else { //if recursion number is not 0:
+		}
+		else { //if recursion number is not 0:
 			long long int score = 0;
 			for (int i = 0; i < b.xsize; i++) { //check all legal moves
 				if (!b.isFull(i)) { // for all legal modes
-					score = score + gradeMove(i, b, side*-1, depth - 1);
+					score = score + gradeMove(i, b, side * -1, depth - 1);
 				}
 			}
 			return score;
@@ -213,9 +216,16 @@ int main()
 
 	int move;
 	while (true) {
-		cout << "choose your move: "<< endl;
-		cin >> move;
-		b.put(move, -1);
+		while (true) {
+			cout << "Choose your move: " << endl;
+			cin >> move;
+			if (b.put(move, -1)) {
+				break;
+			}
+			else {
+				cout << "That row is full, try again" << endl;
+			}
+		}
 		if (b.checkWin(-1)) {
 			b.visualise();
 			cout << "You won!" << endl;
@@ -230,9 +240,9 @@ int main()
 			break;
 		}
 		b.visualise();
-		
+
 	}
-	
-	
+
+
 	return 0;
 }
