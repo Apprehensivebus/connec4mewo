@@ -65,7 +65,6 @@ public:
 			for (int i = ysize - 1; i >= 0; i--) {
 				if (board[col][i] == 0) {
 					board[col][i] = side;
-					break;
 					return true;
 				}
 			}
