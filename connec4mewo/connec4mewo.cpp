@@ -206,6 +206,9 @@ public:
 			if (!b.isFull(i)) { // for all legal modes
 				score[i] = res[i].get();
 			}
+			else {
+				score[i] = LLONG_MIN;
+			}
 		}
 		int n = sizeof(score) / sizeof(score[0]);
 		auto max_it = max_element(score, score + n);
