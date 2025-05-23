@@ -69,6 +69,7 @@ public:
 				}
 			}
 		}
+		return false;
 	}
 
 	bool checkFalling(int side) { //Check falling diagonal win
